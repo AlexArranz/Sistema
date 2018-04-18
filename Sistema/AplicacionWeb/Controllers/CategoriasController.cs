@@ -23,12 +23,25 @@ namespace AplicacionWeb.Controllers
         /// Vista que muestra el listado de todas las categorias de la base de datos
         /// </summary>
         /// <param name="sortOrder">Parametro de ordenacion</param>
+        /// <param name="searchstring">Filtro de busqueda</param>
+        /// <param name="currentFilter">Filtro actual</param>
+        /// <param name="page">numero de pagina</param>
         /// <returns>Retorna la vista index con el listado de las categorias</returns>
-        public async Task<IActionResult> Index(String sortOrder, string searchstring)
+        public async Task<IActionResult> Index(String sortOrder, string searchstring, String currentFilter, int? page)
         {
             ViewData["NombreSortParm"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
             ViewData["DescripcionSortParm"] = sortOrder == "descripcion_asc" ? "descripcion_desc" : "descripcion_asc";
+
+            if(searchstring != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchstring = currentFilter;
+            }
             ViewData["CurrentFilter"] = searchstring;
+            ViewData["CurrentSort"] = sortOrder;
 
             var categorias = from s in _context.Categoria select s;
 
@@ -53,8 +66,11 @@ namespace AplicacionWeb.Controllers
                     break;
             }
 
-            return View(await categorias.AsNoTracking().ToListAsync());
             //return View(await _context.Categoria.ToListAsync());
+            //return View(await categorias.AsNoTracking().ToListAsync());
+            int pageSize = 3;
+            //La expresion page ?? 1 significa devolver el valor de page si tiene un valor o devolver 1 si page es nulo
+            return View(await Paginacion<Categoria>.CreateAsync(categorias.AsNoTracking(), page ?? 1, pageSize));
         }
 
         // GET: Categorias/Details/5
