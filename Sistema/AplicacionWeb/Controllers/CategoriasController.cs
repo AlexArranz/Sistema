@@ -24,12 +24,18 @@ namespace AplicacionWeb.Controllers
         /// </summary>
         /// <param name="sortOrder">Parametro de ordenacion</param>
         /// <returns>Retorna la vista index con el listado de las categorias</returns>
-        public async Task<IActionResult> Index(String sortOrder)
+        public async Task<IActionResult> Index(String sortOrder, string searchstring)
         {
             ViewData["NombreSortParm"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
             ViewData["DescripcionSortParm"] = sortOrder == "descripcion_asc" ? "descripcion_desc" : "descripcion_asc";
+            ViewData["CurrentFilter"] = searchstring;
 
             var categorias = from s in _context.Categoria select s;
+
+            if (!String.IsNullOrEmpty(searchstring))
+            {
+                categorias = categorias.Where(s =>s.Nombre.Contains(searchstring) || s.Descripcion.Contains(searchstring));
+            }
 
             switch (sortOrder)
             {
