@@ -24,6 +24,7 @@ namespace AplicacionWeb.Data
                 new Categoria{Nombre="Diseño gráfico", Descripcion="Cursos de diseño gráfico",Estado=true}
             };
 
+            //Recorrer el vector categorias y añadir cada objeto a la base de datos
             foreach (Categoria c in categorias)
             {
                 context.Categoria.Add(c);
