@@ -7,5 +7,6 @@ namespace AplicacionWeb.Data
 {
     public class DdInitilizer
     {
+        //prueba
     }
 }
