@@ -22,10 +22,33 @@ namespace AplicacionWeb.Controllers
         /// <summary>
         /// Vista que muestra el listado de todas las categorias de la base de datos
         /// </summary>
+        /// <param name="sortOrder">Parametro de ordenacion</param>
         /// <returns>Retorna la vista index con el listado de las categorias</returns>
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(String sortOrder)
         {
-            return View(await _context.Categoria.ToListAsync());
+            ViewData["NombreSortParm"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
+            ViewData["DescripcionSortParm"] = sortOrder == "descripcion_asc" ? "descripcion_desc" : "descripcion_asc";
+
+            var categorias = from s in _context.Categoria select s;
+
+            switch (sortOrder)
+            {
+                case "nombre_desc":
+                    categorias = categorias.OrderByDescending(s => s.Nombre);
+                    break;
+                case "descripcion_desc":
+                    categorias = categorias.OrderByDescending(s => s.Descripcion);
+                    break;
+                case "descripcion_asc":
+                    categorias = categorias.OrderBy(s => s.Descripcion);
+                    break;
+                default:
+                    categorias = categorias.OrderBy(s => s.Nombre);
+                    break;
+            }
+
+            return View(await categorias.AsNoTracking().ToListAsync());
+            //return View(await _context.Categoria.ToListAsync());
         }
 
         // GET: Categorias/Details/5
