@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using AplicacionWeb.Models;
+using AplicacionWeb.Data;
 
 namespace AplicacionWeb
 {
@@ -30,7 +31,7 @@ namespace AplicacionWeb
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, AplicacionWebContext context)
         {
             if (env.IsDevelopment())
             {
@@ -50,6 +51,7 @@ namespace AplicacionWeb
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            DdInitilizer.Initilize(context);
         }
     }
 }
